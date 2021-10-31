@@ -1,0 +1,1 @@
+Criação da pasta dados, local que ficarão os arquivos de fonte de pesquisa, figuras, tabelas, mapas, e outros resultados da análise.
