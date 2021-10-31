@@ -1,0 +1,1 @@
+Criação da pasta Scripts onde iremos inserir os scripts do R usados no trabalho.
