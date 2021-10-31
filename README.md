@@ -14,11 +14,11 @@
 
 ---
 
-<b>Gabiroba<b> , guabiroba, guabirova, guavirova, gavirova, araçá-congonha ou gabiraba são os nomes populares dado ao fruto produzido pela <i>Campomanesia xanthocarpa<i>, árvore da família <i>Myrtaceae<i>. O nome surgiu da junção dos termos tupis wa'bi, "ao comer" e rob, "amargo".
+<b>Gabiroba<b> , guabiroba, guabirova, guavirova, gavirova, araçá-congonha ou gabiraba são os nomes populares dado ao fruto produzido pela <i>Campomanesia xanthocarpa<i>, árvore da família <i>Myrtaceae<i>. O nome surgiu da junção dos termos tupis wa'bi, "ao comer" e rob, "amargo".<br>
 
 !https://cdn.awsli.com.br/600x450/163/163535/produto/5940025/d7a08bf5e1.jpg!  
   
-**Morfologia e Distribuição**
+**Morfologia e Distribuição**<br>
   
 Árvore semidecídua, de copa densa e alongada, de 4-15 m de altura, com tronco canelado e descamante, nativa deis de Minas Gerais e Mato Grosso do Sul até o Rio Grande do Sul em quase todas as formações vegetais dessas regiões. Distingue-se das demais por possuir folhas totalmente desenvolvidas na antese e por ter geralmente um tufo de pelos nas axilas das nervuras principalmente na face inferior, além dos pedúnculos glabros e mais longos que as flores e lobos do cálice oblongos-obovados. Flores solitárias, formadas de setembro a novembro. Frutos arredondados, lisos, amarelos ou alaranjados, com polpa suculenta, firme e de sabor doce, com maturação de novembro-dezembro (Wikipedia apud Lorenzi, 2015).
 Polinização por abelhas e outros insetos, enquanto que a dispersão de frutos ocorre por primatas, lagartos como o Teiú <i> Salvator merianae<i>.
@@ -26,11 +26,11 @@ Usada na medicina em uma infusão da pele dos frutos que gera um óleo que é em
 
 ---
   
-**Objetivos**
+**Objetivos**<br>
   
   Verificar se a ocorrência de animais dispersores de sementes aumentam a capacidade regenerativa de áreas antropizadas da Mata Atlântica.
   
-**Hipótesis**
+**Hipótesis**<br>
   
   H0 O potencial regenerativo das áreas independe da riqueza de espécies de dispersores.
 
@@ -38,7 +38,7 @@ Usada na medicina em uma infusão da pele dos frutos que gera um óleo que é em
 
   H2 O potencial regenerativo das áreas diminui de acordo com o aumento da riqueza de espécies de dispersores.
   
-**Material e Método**
+**Material e Método**<br>
   
   Para a realização do trabalho serão utilizados data papers de diferentes grupos taxonomicos de animais disperssores de sementes da Mata Atlântica...
   
