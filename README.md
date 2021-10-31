@@ -14,7 +14,7 @@
 
 ---
 
- Gabiroba, guabiroba, guabirova, guavirova, gavirova, araçá-congonha ou gabiraba são os nomes populares dado ao fruto produzido pela <i>Campomanesia xanthocarpa<i>, árvore da família <i>Myrtaceae<i>. O nome surgiu da junção dos termos tupis wa'bi, "ao comer" e rob, "amargo".<br>
+ Gabiroba, guabiroba, guabirova, guavirova, gavirova, araçá-congonha ou gabiraba são os nomes populares dado ao fruto produzido pela *Campomanesia xanthocarpa*, árvore da família *Myrtaceae*. O nome surgiu da junção dos termos tupis wa'bi, "ao comer" e rob, "amargo".<br>
 
 (https://cdn.awsli.com.br/600x450/163/163535/produto/5940025/d7a08bf5e1.jpg) 
   
