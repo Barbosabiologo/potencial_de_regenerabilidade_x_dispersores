@@ -27,14 +27,18 @@ Usada na medicina em uma infusão da pele dos frutos que gera um óleo que é em
 ---
   
 **Objetivos**
-Verificar se a ocorrência de animais dispersores de sementes aumentam a capacidade regenerativa de áreas antropizadas da Mata Atlântica.
+  
+  Verificar se a ocorrência de animais dispersores de sementes aumentam a capacidade regenerativa de áreas antropizadas da Mata Atlântica.
   
 **Hipótesis**
-H0 O potencial regenerativo das áreas independe da riqueza de espécies de dispersores.
-H1 O potencial regenerativo das áreas aumenta de acordo com o aumento da riqueza de espécies de dispersores.
-H2 O potencial regenerativo das áreas diminui de acordo com o aumento da riqueza de espécies de dispersores.
+  
+  H0 O potencial regenerativo das áreas independe da riqueza de espécies de dispersores.
+
+  H1 O potencial regenerativo das áreas aumenta de acordo com o aumento da riqueza de espécies de dispersores.
+
+  H2 O potencial regenerativo das áreas diminui de acordo com o aumento da riqueza de espécies de dispersores.
   
 **Material e Método**
   
-Para a realização do trabalho serão utilizados data papers de diferentes grupos taxonomicos de animais disperssores de sementes da Mata Atlântica...
+  Para a realização do trabalho serão utilizados data papers de diferentes grupos taxonomicos de animais disperssores de sementes da Mata Atlântica...
   
