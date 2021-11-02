@@ -114,7 +114,7 @@ dados
 # Selecionando apenas as espécies em comum entre "dados" e "FR", assim teremos uma tabela apenas com especies frugivoras.
 
 dados_2 <- dados %>% 
-  anti_join(FR, by = "Species") 
+  semi_join(FR, by = "Species") 
 dados_2
 
 # Criando tabela de riqueza de sp por localidade
