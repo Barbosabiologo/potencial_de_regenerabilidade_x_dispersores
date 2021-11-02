@@ -117,5 +117,9 @@ dados_2 <- dados %>%
   semi_join(FR, by = "Species") 
 dados_2
 
-# Criando tabela de riqueza de sp por localidade
+# adiconando os dados de frugívoros à tabela para distribuição dos pontos ao mapa
+dados_3 <- dplyr::bind_rows(FR, dados_2)
+dados_3
+
+
 
