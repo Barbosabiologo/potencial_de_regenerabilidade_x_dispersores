@@ -13,14 +13,28 @@ library(dplyr)
 library(tidyr)
 library(tidyverse)
 library(here)
+library(readxl)
 
 #Carregar diretÃ³rio------------------------------------------------------------
 here::here()
 
 #DATA--------------------------------------------------------------------------
+#####
 
-Bats <- read.csv(file="./dados/tabelas/ATLANTIC-PR_Occurrence.csv", sep = ";") %>% 
-  as_tibble()
+{BSite <- readr::read_csv("./dados/tabelas/ATLANTIC_BATS_Study_site.csv",
+                           locale = readr::locale(encoding = "latin1")) %>% 
+  dplyr::select(`ID`,Latitude, Longitude) %>% 
+  dplyr::rename(I=`ID`)
+
+
+BCap <-  readr::read_csv("./dados/tabelas/Atlantica_bats_cap_corrigido.csv",
+                     locale = readr::locale(encoding = "latin1")) %>% 
+  dplyr::select(`ID`,Species) %>% 
+  dplyr::rename(I=`ID`)
+
+Bats <- dplyr::left_join(BCap,BSite, by="I")}
+  
+#####
 
 Mammals <- readr::read_csv("./dados/tabelas/ATLANTIC_MAMMAL_MID_LARGE _assemblages_and_sites.csv",
                            locale = readr::locale(encoding = "latin1"))
@@ -31,32 +45,31 @@ Birds <- readr::read_csv("./dados/tabelas/ATLANTIC_BIRDS_quantitative.csv",
 Primates <- read.csv(file="./dados/tabelas/ATLANTIC-PR_Occurrence.csv", sep=";")%>% 
   as_tibble()
 
-#Para small mammals foi necessário unir as duas tabelas
+#Para small mammals foi necess?rio unir as duas tabelas
 {
 SMCap <- readr::read_csv("./dados/tabelas/ATLANTIC_SM_Capture.csv",
                       locale = readr::locale(encoding = "latin1")) %>% 
-  dplyr::select(`ID `,Actual_species_name) %>% 
-  dplyr::rename(I=`ID `)
+  dplyr::select(`IDÂ `,Actual_species_name) %>% 
+  dplyr::rename(I=`IDÂ `)
 
 SMSite <- readr::read_csv("./dados/tabelas/ATLANTIC_SM_Study_Site.csv",
                        locale = readr::locale(encoding = "latin1")) %>% 
-dplyr::select(`ID `,Longitude, Latitude) %>% 
-dplyr::rename(I=`ID `)
+dplyr::select(`IDÂ `,Longitude, Latitude) %>% 
+dplyr::rename(I=`IDÂ `)
 
 Small_Mammals <- dplyr::left_join(SMCap,SMSite, by="I")
 }
+
 
 Frugivory <- readr::read_csv("./dados/tabelas/ATLANTIC_frugivory.csv")
 
 #Selecionando colunas de interesses e montando os data.frame
 
 BA <- Bats %>% 
-  dplyr::select(SPECIES, LONGITUDE_X, LATITUDE_Y) %>% 
+  dplyr::select(Species, Longitude, Latitude) %>% 
   dplyr::mutate(Group="Bats", 
-                .before = SPECIES) %>% 
-  dplyr::rename(Species=SPECIES,
-                Longitude=LONGITUDE_X,
-                Latitude=LATITUDE_Y)
+                .before = Species)  
+ 
 
 SM <- Small_Mammals %>% 
   dplyr::select(Actual_species_name, Longitude, Latitude) %>% 
