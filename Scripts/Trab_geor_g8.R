@@ -20,7 +20,7 @@ here::here()
 
 #DATA--------------------------------------------------------------------------
 #####
-
+# Add morcegos
 {BSite <- readr::read_csv("./dados/tabelas/ATLANTIC_BATS_Study_site.csv",
                            locale = readr::locale(encoding = "latin1")) %>% 
   dplyr::select(`ID`,Latitude, Longitude) %>% 
@@ -35,17 +35,19 @@ BCap <-  readr::read_csv("./dados/tabelas/Atlantica_bats_cap_corrigido.csv",
 Bats <- dplyr::left_join(BCap,BSite, by="I")}
   
 #####
-
+#Add dados mamiferos medio e grandes
 Mammals <- readr::read_csv("./dados/tabelas/ATLANTIC_MAMMAL_MID_LARGE _assemblages_and_sites.csv",
                            locale = readr::locale(encoding = "latin1"))
 
+#Add dados aves
 Birds <- readr::read_csv("./dados/tabelas/ATLANTIC_BIRDS_quantitative.csv",
                          locale = readr::locale(encoding = "latin1"))
 
+#Add dados primatas
 Primates <- read.csv(file="./dados/tabelas/ATLANTIC-PR_Occurrence.csv", sep=";")%>% 
   as_tibble()
 
-#Para small mammals foi necess?rio unir as duas tabelas
+#Para small mammals foi necessario unir as duas tabelas
 {
 SMCap <- readr::read_csv("./dados/tabelas/ATLANTIC_SM_Capture.csv",
                       locale = readr::locale(encoding = "latin1")) %>% 
@@ -92,13 +94,24 @@ BI <- Birds %>%
   dplyr::rename(Longitude=Longitude_x,
                 Latitude=Latitude_y)
 
+MG <- Mammals %>% 
+  dplyr::select(Actual_species_Name, Longitude, Latitude) %>% 
+  dplyr::rename(Species=Actual_species_Name) %>% 
+  dplyr::mutate(Group ="Mammals", 
+                .before = Species)
+
 FR <- Frugivory %>% 
   dplyr::select(Frug_Group, Frugivore_Species, Longitude, Latitude) %>% 
   dplyr::rename(Group=Frug_Group,
                 Species=Frugivore_Species) %>% 
   tidyr::drop_na()
 
-#Unindo em um arq só
+# Unindo data fauna em um arq só
 
-dados <- dplyr::bind_rows(BI, PR, FR, SM, BA)
+dados <- dplyr::bind_rows(BI, PR, SM, MG, BA)
+
+# Selecionando apenas as espécies em comum entre "dados" e "FR"
+
+
+# Criando tabela de riqueza de sp por localidade
 
