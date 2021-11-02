@@ -121,5 +121,7 @@ dados_2
 dados_3 <- dplyr::bind_rows(FR, dados_2)
 dados_3
 
+#Exportar os arquivos
 
-
+write.csv(dados_2, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/Dados_2.csv") 
+write.csv(dados_3, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/Dados_3.csv")  
