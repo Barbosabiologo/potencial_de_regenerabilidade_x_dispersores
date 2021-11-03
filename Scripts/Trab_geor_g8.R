@@ -126,6 +126,22 @@ write.csv(dados_filtro_fr, file = "~/GitHub/potencial_de_regenerabilidade_x_disp
 write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_final.csv")  
 
 # importar raster ---------------------------------------------------------
+# directory
+setwd("./geor-g8-guabiroba-main/dados/raster")
+getwd()
+dir()
+
+# listar raster
+ti <- dir(pattern = ".tif") # Lista apenas os arquivos da pasta com o final TIF
+ti
+
+regen <- grep("map_regen.tif", ti, value=T) #mapa de regenerabilidade "map_regen.tif"#
+regen
+
+
+# # importar limites ------------------------------------------------------
+lim <- sf::st_read("lim_integ_ma_br.shp")
+plot(lim)
 
 
 # criam hexagonos ---------------------------------------------------------
