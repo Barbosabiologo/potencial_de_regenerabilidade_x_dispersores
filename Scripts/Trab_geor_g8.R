@@ -158,4 +158,51 @@ plot(lim)
 
 # end ---------------------------------------------------------------------
 
+# importar raster ---------------------------------------------------------
+
+# listar raster
+ti <- dir(path = here::here("dados", "raster"), pattern = "map",
+          full.names = TRUE) %>% 
+  grep(".tif", ., value = TRUE)# Lista apenas os arquivos da pasta com o final TIF
+
+# # importar limites ------------------------------------------------------
+lim <- sf::st_read("./dados/raster/lim_integ_ma_br.shp")
+plot(lim)
+
+#raster do mapa
+raster <- raster::raster("./dados/raster/map_seed_rain_forest_FBDS_SOS_Hansen_patch_AreaHA_maximum_weibull_norm_int_compressed.tif") %>% 
+  raster::crop(lim)
+
+plot(raster )
+ plot(raster, col=viridis::viridis(10))
+ 
+
+#Criando vetor com os dados
+dados_vetor <- dados_final %>% 
+  sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326) 
+
+plot(dados_vetor$geometry, pch = 20, col = "red", main = NA,
+      axes = TRUE, graticule = FALSE)
+
+
+
+# criam hexagonos ---------------------------------------------------------
+dados_hex <- dados_vetor %>% 
+  sf::st_make_grid(cellsize = 20000, square = FALSE) %>% 
+  sf::st_as_sf() %>% 
+  dplyr::filter(sf::st_intersects(x=., y=dados_vetor, sparse = FALSE))
+
+
+
+# resumir as informacoes --------------------------------------------------
+
+
+
+# estatistica -------------------------------------------------------------
+
+
+
+# end ---------------------------------------------------------------------
+
+
 
