@@ -14,6 +14,10 @@ library(tidyr)
 library(tidyverse)
 library(here)
 library(readxl)
+library(stringr)
+library(raster)
+library(sf)
+
 
 #Carregar diretório------------------------------------------------------------
 here::here()
@@ -126,39 +130,6 @@ write.csv(dados_filtro_fr, file = "~/GitHub/potencial_de_regenerabilidade_x_disp
 write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_final.csv")  
 
 # importar raster ---------------------------------------------------------
-# directory
-setwd("./geor-g8-guabiroba-main/dados/raster")
-getwd()
-dir()
-
-# listar raster
-ti <- dir(pattern = ".tif") # Lista apenas os arquivos da pasta com o final TIF
-ti
-
-regen <- grep("map_regen.tif", ti, value=T) #mapa de regenerabilidade "map_regen.tif"#
-regen
-
-
-# # importar limites ------------------------------------------------------
-lim <- sf::st_read("lim_integ_ma_br.shp")
-plot(lim)
-
-
-# criam hexagonos ---------------------------------------------------------
-
-
-
-# resumir as informacoes --------------------------------------------------
-
-
-
-# estatistica -------------------------------------------------------------
-
-
-
-# end ---------------------------------------------------------------------
-
-# importar raster ---------------------------------------------------------
 
 # listar raster
 ti <- dir(path = here::here("dados", "raster"), pattern = "map",
@@ -171,7 +142,7 @@ lim <- sf::st_read("./dados/vetor/ma_limite_integrador_muylaert_et_al_2018_wgs84
 plot(lim$geometry)
 
 #raster do mapa
-raster <- raster::raster("./dados/raster/map_seed_rain_forest_FBDS_SOS_Hansen_patch_AreaHA_maximum_weibull_by_pasture_norm_int_compressed.tif")
+raster <- raster::raster("./dados/raster/map_seed_rain_forest_FBDS_SOS_Hansen_patch_AreaHA_maximum_weibull_by_pasture_norm_int_compressed.tif")  
   raster::crop(st_transform(lim, crs = crs(.)))
 raster
 
@@ -202,6 +173,19 @@ dados_hex
 
 plot(lim_albers$geometry)
 plot(dados_hex, add = TRUE)
+
+##Cortar
+
+lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex, col="light gray")
+plot(lim_hex$geometry)
+
+
+lim_raster <- raster %>% 
+  raster::crop(lim_albers) %>% 
+  raster::mask(lim_albers)
+plot(lim_raster, col=viridis::viridis(5))
+
+
 
 # resumir as informacoes --------------------------------------------------
 
