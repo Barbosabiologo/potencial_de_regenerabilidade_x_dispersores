@@ -33,18 +33,7 @@ Bats <- readxl::read_excel("ATLANTIC_BATS_2020_comp.xlsx") %>%
   select(-Abundancy)
 Bats
 
-{BSite <- readr::read_csv("./dados/tabelas/ATLANTIC_BATS_Study_site.csv",
-                           locale = readr::locale(encoding = "latin1")) %>% 
-  dplyr::select(`ID`,Latitude, Longitude) %>% 
-  dplyr::rename(I=`ID`)
 
-
-BCap <-  readr::read_csv("./dados/tabelas/Atlantica_bats_cap_corrigido.csv",
-                     locale = readr::locale(encoding = "latin1")) %>% 
-  dplyr::select(`ID`,Species) %>% 
-  dplyr::rename(I=`ID`)
-
-Bats <- dplyr::left_join(BCap,BSite, by="I")}
   
 #####
 #Add dados mamiferos medio e grandes
@@ -123,29 +112,13 @@ FR <- Frugivory %>%
 dados <- dplyr::bind_rows(BI, PR, SM, MG, BA)
 dados
 
-# Selecionando apenas as espécies em comum entre "dados" e "FR", assim teremos uma tabela apenas com especies frugivoras.
 
-dados_filtro_fr <- dados %>% 
-  semi_join(FR, by = "Species") 
-dados_filtro_fr
-
-# dados_21 <- dados %>% 
-#   filter(Species %in% FR$Species) 
-# dados_21
-
-# adiconando os dados de frugívoros à tabela para distribuição dos pontos ao mapa
-dados_total <- dplyr::bind_rows(FR, dados_filtro_fr)
-dados_total
-
-#Excluindo Amphibios da lista
-no_sapos <- filter(dados_3, Group != "Amphibians")
-
-# Executando de uma única vez
+# Limpeza de dados final
 dados_final <- dados %>% 
-  semi_join(FR, by = "Species") %>% 
-  dplyr::bind_rows(FR) %>% 
-  filter(Group != "Amphibians") %>% 
-  distinct(Species, Longitude, Latitude, .keep_all = TRUE)
+  semi_join(FR, by = "Species") %>% #Selecionando apenas as espécies em comum entre "dados" e "FR", assim teremos uma tabela apenas com especies frugivoras.
+  dplyr::bind_rows(FR) %>%# adiconando os dados de frugívoros à tabela para distribuição dos pontos ao mapa 
+  filter(Group != "Amphibians") %>% #Excluindo Amphibios da lista
+  distinct(Species, Longitude, Latitude, .keep_all = TRUE)#removendo espécies que aparecem no msm lugar
 dados_final
 
 # Exportar os arquivos
