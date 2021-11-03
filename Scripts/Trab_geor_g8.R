@@ -121,6 +121,16 @@ dados_2
 dados_3 <- dplyr::bind_rows(FR, dados_2)
 dados_3
 
+#Excluindo Amphibios da lista
+no_sapos <- filter(dados_3, Group != "Amphibians")
+
+# Executando de uma única vez
+dados_4 <- dados %>% 
+  semi_join(FR, by = "Species") %>% 
+  dplyr::bind_rows(FR, ) %>% 
+  filter(, Group != "Amphibians")
+dados_4
+
 #Exportar os arquivos
 
 write.csv(dados_2, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/Dados_2.csv") 
