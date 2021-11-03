@@ -19,8 +19,20 @@ library(readxl)
 here::here()
 
 #DATA--------------------------------------------------------------------------
-#####
+
 # Add morcegos
+Bats <- readxl::read_excel("ATLANTIC_BATS_2020_comp.xlsx") %>% 
+  rename(id = ID...1) %>% 
+  mutate(Longitude = str_replace(Longitude, ",", ".") %>% as.numeric(),
+         Latitude = str_replace(Latitude, ",", ".") %>% as.numeric()) %>% 
+  filter(Olsong200r == "Atlantic Forests") %>% 
+  select(1, Longitude, Latitude, Anoura.caudifer:Micronycteris.sp.) %>% 
+  pivot_longer(cols = Anoura.caudifer:Micronycteris.sp.,
+               names_to = "Species",
+               values_to = "Abundancy") %>% 
+  select(-Abundancy)
+Bats
+
 {BSite <- readr::read_csv("./dados/tabelas/ATLANTIC_BATS_Study_site.csv",
                            locale = readr::locale(encoding = "latin1")) %>% 
   dplyr::select(`ID`,Latitude, Longitude) %>% 
@@ -113,25 +125,48 @@ dados
 
 # Selecionando apenas as espécies em comum entre "dados" e "FR", assim teremos uma tabela apenas com especies frugivoras.
 
-dados_2 <- dados %>% 
+dados_filtro_fr <- dados %>% 
   semi_join(FR, by = "Species") 
-dados_2
+dados_filtro_fr
+
+# dados_21 <- dados %>% 
+#   filter(Species %in% FR$Species) 
+# dados_21
 
 # adiconando os dados de frugívoros à tabela para distribuição dos pontos ao mapa
-dados_3 <- dplyr::bind_rows(FR, dados_2)
-dados_3
+dados_total <- dplyr::bind_rows(FR, dados_filtro_fr)
+dados_total
 
 #Excluindo Amphibios da lista
 no_sapos <- filter(dados_3, Group != "Amphibians")
 
 # Executando de uma única vez
-dados_4 <- dados %>% 
+dados_final <- dados %>% 
   semi_join(FR, by = "Species") %>% 
-  dplyr::bind_rows(FR, ) %>% 
-  filter(, Group != "Amphibians")
-dados_4
+  dplyr::bind_rows(FR) %>% 
+  filter(Group != "Amphibians") %>% 
+  distinct(Species, Longitude, Latitude, .keep_all = TRUE)
+dados_final
 
-#Exportar os arquivos
+# Exportar os arquivos
+write.csv(dados_filtro_fr, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_filtro_fr.csv") 
+write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_final.csv")  
 
-write.csv(dados_2, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/Dados_2.csv") 
-write.csv(dados_3, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/Dados_3.csv")  
+# importar raster ---------------------------------------------------------
+
+
+# criam hexagonos ---------------------------------------------------------
+
+
+
+# resumir as informacoes --------------------------------------------------
+
+
+
+# estatistica -------------------------------------------------------------
+
+
+
+# end ---------------------------------------------------------------------
+
+
