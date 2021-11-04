@@ -17,6 +17,7 @@ library(readxl)
 library(stringr)
 library(raster)
 library(sf)
+library(tmap)
 
 
 #Carregar diretório------------------------------------------------------------
@@ -135,60 +136,122 @@ dados_final
 ti <- dir(path = here::here("dados", "raster"), pattern = "map",
           full.names = TRUE) %>% 
   grep(".tif", ., value = TRUE)# Lista apenas os arquivos da pasta com o final TIF
-
+ti
 
 # # importar limites ------------------------------------------------------
-lim <- sf::st_read("./dados/vetor/ma_limite_integrador_muylaert_et_al_2018_wgs84.shp")
+lim <- sf::st_read("./dados/vetor/limit_af_lawaf2006_gcs_wgs84.shp") %>% 
+  sf::st_transform(crs = 4674)
+lim
 plot(lim$geometry)
 
 #raster do mapa
-raster <- raster::raster("./dados/raster/reg_1000m_sirgas2000.tif") %>%  
-  raster::crop(st_transform(lim, crs = crs(.)))
+raster <- raster::raster("./dados/raster/reg_1000m_sirgas2000.tif")
 raster
 
-plot(raster)
-plot(raster, col=viridis::viridis(10))
+plot(raster, col = viridis::viridis(10))
+plot(lim$geometry, add = TRUE)
  
-#Criando vetor com os dados
+# Criando vetor com os dados
 dados_vetor <- dados_final %>% 
   tidyr::drop_na(Longitude, Latitude) %>% 
   dplyr::filter(Longitude > -1e3) %>% 
-  sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
+  sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4674)
+dados_vetor
 
-dados_vetor_albers <- st_transform(dados_vetor, crs = crs(raster))
-dados_vetor_albers
+# filtro das coordenadas
+dados_vetor_lim <- dados_vetor[lim, ]
+dados_vetor_lim
 
+# corte do raster
+raster_lim <- raster %>% 
+  raster::crop(lim) %>% 
+  raster::mask(lim)
+raster_lim
 
-plot(lim_albers$geometry)
-plot(dados_vetor_albers$geometry, pch = 20, col = "red", add = TRUE)
+plot(raster_lim, col = viridis::viridis(10))
+plot(lim$geometry, add = TRUE)
+plot(dados_vetor_lim$geometry, pch = 20, col = "red", add = TRUE)
 
 # criam hexagonos ---------------------------------------------------------
 
-lim_albers <- st_transform(lim, crs = crs(raster))
-
-dados_hex <- lim_albers %>% 
-  sf::st_make_grid(cellsize = 2e5, square = FALSE) %>% 
+dados_hex <- lim %>% 
+  sf::st_make_grid(cellsize = 1, square = FALSE) %>% 
   sf::st_as_sf() %>% 
-  dplyr::filter(sf::st_intersects(x = ., y = lim_albers, sparse = FALSE)) %>% 
+  dplyr::filter(sf::st_intersects(x = ., y = lim, sparse = FALSE)) %>% 
   st_as_sf()
-dados_hex_albers <- st_transform(dados_hex, crs = crs(raster))
+dados_hex
 
 #sf::sf_write(obj = dados_hex, dsn = here::here("dados", "dados.shp"))
 
-plot(lim_albers$geometry)
+plot(lim$geometry)
 plot(dados_hex, add = TRUE)
 
 ##Cortar
 
-lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex_albers, col="light gray")
-lim_hex_albers <- st_transform(lim_hex, crs = crs(raster))
-plot(lim_hex_albers$geometry)
+# lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex_albers, col="light gray")
+# lim_hex_albers <- st_transform(lim_hex, crs = crs(raster))
+# plot(lim_hex_albers$geometry)
 
 #Plots
-plot(raster, col=viridis::viridis(10))
-plot(lim_albers$geometry, add = TRUE)
-plot(lim_hex_albers$geometry, add = TRUE)
-plot(dados_vetor_albers$geometry, pch = 20, col = "red", add = TRUE)
+plot(raster_lim, col=viridis::viridis(10))
+plot(lim$geometry, add = TRUE)
+plot(dados_hex, add = TRUE)
+plot(dados_vetor_lim$geometry, pch = 20, col = "red", add = TRUE)
+
+# extracts ----------------------------------------------------------------
+
+dados_hex_id <- dados_hex %>% 
+  sf::st_as_sf() %>% 
+  dplyr::mutate(id = 1:nrow(.))
+
+dados_hex_reg <- dados_hex_id %>% 
+  sf::st_as_sf() %>% 
+  dplyr::mutate(reg = raster::extract(x = raster_lim, y = dados_hex, fun = median, na.rm = TRUE))
+dados_hex_reg$reg
+
+plot(dados_hex_reg)
+
+ggplot() +
+  geom_sf(data = dados_hex_reg, aes(fill = reg)) +
+  scale_fill_viridis_c() +
+  theme_bw(base_size = 15)
+
+# pontos ------------------------------------------------------------------
+
+dados_hex_sp <- dados_hex_id %>% 
+  sf::st_join(dados_vetor_lim) %>%
+  sf::st_drop_geometry() %>% 
+  dplyr::distinct(id, Species, .keep_all = TRUE) %>% 
+  tidyr::drop_na(Species) %>% 
+  dplyr::group_by(id) %>% 
+  dplyr::summarise(n = n())
+dados_hex_sp$n
+
+dados_hex_species <- dplyr::left_join(dados_hex_id, dados_hex_reg) %>% 
+  dplyr::mutate(n = ifelse(is.na(n), 0, n))
+dados_hex_species
+
+ggplot() +
+  geom_sf(data = dados_hex_species, aes(fill = n)) +
+  scale_fill_viridis_c() +
+  theme_bw(base_size = 15)
+
+# join final --------------------------------------------------------------
+
+dados_hex_reg_species <- dplyr::left_join(dados_hex_reg, st_drop_geometry(dados_hex_species))
+dados_hex_reg_species
+
+dados_hex_reg_species %>% 
+  sf::st_drop_geometry() %>%
+  dplyr::filter(n > 0) %>% 
+  ggplot(aes(x = sqrt(n), y = reg/100)) +
+  geom_point() +
+  geom_smooth(method = "glm", method.args = list(family = "binomial")) +
+  theme_bw(base_size = 15)
+
+summary(glm(reg ~ n, data = dados_hex_reg_species %>% 
+      sf::st_drop_geometry() %>% 
+      dplyr::mutate(reg = reg / 100), family = binomial))
 
 
 # Rasterização--------------------------------------------------
