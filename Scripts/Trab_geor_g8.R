@@ -30,11 +30,11 @@ Bats <- readxl::read_excel("ATLANTIC_BATS_2020_comp.xlsx") %>%
   mutate(Longitude = str_replace(Longitude, ",", ".") %>% as.numeric(),
          Latitude = str_replace(Latitude, ",", ".") %>% as.numeric()) %>% 
   filter(Olsong200r == "Atlantic Forests") %>% 
-  select(1, Longitude, Latitude, Anoura.caudifer:Micronycteris.sp.) %>% 
+  dplyr::select(1, Longitude, Latitude, Anoura.caudifer:Micronycteris.sp.) %>% 
   pivot_longer(cols = Anoura.caudifer:Micronycteris.sp.,
                names_to = "Species",
                values_to = "Abundancy") %>% 
-  select(-Abundancy)
+  dplyr::select(-Abundancy)
 Bats
 
 
@@ -126,8 +126,8 @@ dados_final <- dados %>%
 dados_final
 
 # Exportar os arquivos
-write.csv(dados_filtro_fr, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_filtro_fr.csv") 
-write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_final.csv")  
+#write.csv(dados_filtro_fr, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_filtro_fr.csv") 
+#write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_dispersores/dados/tabelas/dados_final.csv")  
 
 # importar raster ---------------------------------------------------------
 
@@ -135,14 +135,14 @@ write.csv(dados_final, file = "~/GitHub/potencial_de_regenerabilidade_x_disperso
 ti <- dir(path = here::here("dados", "raster"), pattern = "map",
           full.names = TRUE) %>% 
   grep(".tif", ., value = TRUE)# Lista apenas os arquivos da pasta com o final TIF
-ti
+
 
 # # importar limites ------------------------------------------------------
 lim <- sf::st_read("./dados/vetor/ma_limite_integrador_muylaert_et_al_2018_wgs84.shp")
 plot(lim$geometry)
 
 #raster do mapa
-raster <- raster::raster("./dados/raster/map_seed_rain_forest_FBDS_SOS_Hansen_patch_AreaHA_maximum_weibull_by_pasture_norm_int_compressed.tif")  
+raster <- raster::raster("./dados/raster/reg_1000m_sirgas2000.tif") %>%  
   raster::crop(st_transform(lim, crs = crs(.)))
 raster
 
@@ -154,8 +154,6 @@ dados_vetor <- dados_final %>%
   tidyr::drop_na(Longitude, Latitude) %>% 
   dplyr::filter(Longitude > -1e3) %>% 
   sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
-
-dados_vetor_lim <- dados_vetor[lim, ]
 
 plot(lim$geometry)
 plot(dados_vetor$geometry, pch = 20, col = "red", add = TRUE)
@@ -179,13 +177,7 @@ plot(dados_hex, add = TRUE)
 lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex, col="light gray")
 plot(lim_hex$geometry)
 
-
-lim_raster <- raster %>% 
-  raster::crop(lim_albers) %>% 
-  raster::mask(lim_albers)
-plot(lim_raster, col=viridis::viridis(5))
-
-
+#Plots
 
 # resumir as informacoes --------------------------------------------------
 
