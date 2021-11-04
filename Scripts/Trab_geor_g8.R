@@ -155,8 +155,12 @@ dados_vetor <- dados_final %>%
   dplyr::filter(Longitude > -1e3) %>% 
   sf::st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
 
-plot(lim$geometry)
-plot(dados_vetor$geometry, pch = 20, col = "red", add = TRUE)
+dados_vetor_albers <- st_transform(dados_vetor, crs = crs(raster))
+dados_vetor_albers
+
+
+plot(lim_albers$geometry)
+plot(dados_vetor_albers$geometry, pch = 20, col = "red", add = TRUE)
 
 # criam hexagonos ---------------------------------------------------------
 
@@ -167,7 +171,7 @@ dados_hex <- lim_albers %>%
   sf::st_as_sf() %>% 
   dplyr::filter(sf::st_intersects(x = ., y = lim_albers, sparse = FALSE)) %>% 
   st_as_sf()
-dados_hex
+dados_hex_albers <- st_transform(dados_hex, crs = crs(raster))
 
 #sf::sf_write(obj = dados_hex, dsn = here::here("dados", "dados.shp"))
 
@@ -176,10 +180,16 @@ plot(dados_hex, add = TRUE)
 
 ##Cortar
 
-lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex, col="light gray")
-plot(lim_hex$geometry)
+lim_hex <- sf::st_intersection(x = lim_albers, y=dados_hex_albers, col="light gray")
+lim_hex_albers <- st_transform(lim_hex, crs = crs(raster))
+plot(lim_hex_albers$geometry)
 
 #Plots
+plot(raster, col=viridis::viridis(10))
+plot(lim_albers$geometry, add = TRUE)
+plot(lim_hex_albers$geometry, add = TRUE)
+plot(dados_vetor_albers$geometry, pch = 20, col = "red", add = TRUE)
+
 
 # resumir as informações --------------------------------------------------
 
