@@ -169,6 +169,8 @@ dados_hex <- lim_albers %>%
   st_as_sf()
 dados_hex
 
+#sf::sf_write(obj = dados_hex, dsn = here::here("dados", "dados.shp"))
+
 plot(lim_albers$geometry)
 plot(dados_hex, add = TRUE)
 
@@ -179,7 +181,7 @@ plot(lim_hex$geometry)
 
 #Plots
 
-# resumir as informacoes --------------------------------------------------
+# resumir as informações --------------------------------------------------
 
 
 
