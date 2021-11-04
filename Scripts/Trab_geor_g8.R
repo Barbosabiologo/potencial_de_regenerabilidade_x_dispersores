@@ -191,9 +191,16 @@ plot(lim_hex_albers$geometry, add = TRUE)
 plot(dados_vetor_albers$geometry, pch = 20, col = "red", add = TRUE)
 
 
-# resumir as informações --------------------------------------------------
+# Rasterização--------------------------------------------------
+# Rasterizar lim_hex_albers
+lim_hex_albers_raster <- raster::rasterToPolygons(lim_hex_albers) %>% #não é assim
+  sf::st_as_sf()
+lim_hex_albers_raster
 
-
+# Rasterizar dados_vetor_albers
+dados_vetor_albers_raster <- raster::rasterToPoints(dados_vetor_albers, spatial = TRUE) %>% #não é assim
+  sf::st_as_sf()
+dados_vetor_albers_raster
 
 # estatistica -------------------------------------------------------------
 
