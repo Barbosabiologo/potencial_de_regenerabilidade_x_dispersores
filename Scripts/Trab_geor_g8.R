@@ -227,7 +227,7 @@ dados_hex_sp <- dados_hex_id %>%
   dplyr::summarise(n = n())
 dados_hex_sp$n
 
-dados_hex_species <- dplyr::left_join(dados_hex_id, dados_hex_reg) %>% 
+dados_hex_species <- dplyr::left_join(dados_hex_id, dados_hex_sp) %>% 
   dplyr::mutate(n = ifelse(is.na(n), 0, n))
 dados_hex_species
 
@@ -249,71 +249,11 @@ dados_hex_reg_species %>%
   geom_smooth(method = "glm", method.args = list(family = "binomial")) +
   theme_bw(base_size = 15)
 
+# Estatística_GLM ---------------------------------------------------------
+
 summary(glm(reg ~ n, data = dados_hex_reg_species %>% 
       sf::st_drop_geometry() %>% 
       dplyr::mutate(reg = reg / 100), family = binomial))
-
-
-# Rasterização--------------------------------------------------
-# Rasterizar lim_hex_albers
-lim_hex_albers_raster <- raster::rasterToPolygons(lim_hex_albers) %>% #não é assim
-  sf::st_as_sf()
-lim_hex_albers_raster
-
-# Rasterizar dados_vetor_albers
-dados_vetor_albers_raster <- raster::rasterToPoints(dados_vetor_albers, spatial = TRUE) %>% #não é assim
-  sf::st_as_sf()
-dados_vetor_albers_raster
-
-
-# extrair valores do raster -----------------------------------------------
-
-# raster original
-regen <- raster::stack(raster)
-regen
-plot(regen, col = colorRamps::matlab.like2(100))
-
-# copia
-regen.id <- regen
-plot(regen, col = colorRamps::matlab.like(100))
-
-# criar um raster com ids das celulas
-regen.id[] # valores das celulas
-
-plot(is.na(regen.id)) # na
-plot(!is.na(regen.id)) # nao na
-
-regen.id[!is.na(regen.id)] # valores nao na
-
-ncell(regen.id[!is.na(regen.id)]) # numeroes de celulas nao na
-seq(regen.id[!is.na(regen.id)]) # seq 1 para o número de celulas
-
-regen.id[!is.na(regen.id)] <- seq(regen.id[!is.na(regen.id)])
-plot(regen.id, col = colorRamps::matlab.like2(100))
-
-dados_valores <- dados %>% 
-  mutate(oppc = raster::extract(regen.id, dplyr::select(dados, longitude, latitude)))
-dados_valores
-
-# verificar
-sort(table(dados_valores$oppc))
-
-# valores
-dados_valores2 <- dados_valores %>% 
-  dplyr::distinct(oppc, .keep_all = TRUE) %>% 
-  na.omit
-dados_valores2
-
-# verificar
-sort(table(dados_valores2$oppc))
-
-# exportar
-#exportar dados_valores2#
-dados = dados_final.csv
-# estatistica -------------------------------------------------------------
-m1 <- glm(Regenerablabla~diversidadetotal)
-m2<-glm(Regenerabilidade~diversidade por grupo)
-
 
 
 # end ---------------------------------------------------------------------
